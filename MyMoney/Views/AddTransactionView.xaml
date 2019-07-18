@@ -1,0 +1,133 @@
+﻿<UserControl x:Class="MyMoney.Views.AddTransactionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:viewmodel="clr-namespace:MyMoney.ViewModels"
+             xmlns:databindingenum="clr-namespace:MyMoney.DataBindEnums"
+             xmlns:enums="clr-namespace:MyMoney.Enums"
+             xmlns:local="clr-namespace:MyMoney.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="500">
+    <UserControl.DataContext>
+        <viewmodel:AddTransactionViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <ComboBox IsEditable="True" 
+                  ItemsSource="{Binding Accounts}"
+                  DisplayMemberPath="Name"
+                  Text="{Binding Account, UpdateSourceTrigger=PropertyChanged}" 
+                  Style="{StaticResource ComboBoxStyle}"/>
+        <TextBox IsEnabled="False"
+                 Background="Transparent"
+                 IsHitTestVisible="False">
+            <TextBox.Style>
+                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Account}" Value="{x:Null}">
+                            <Setter Property="Text" Value="Счёт"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <ComboBox Grid.Column="2" 
+                  ItemsSource="{Binding Source={databindingenum:EnumBindingSource {x:Type enums:TransactionType}}}"
+                  SelectedItem="{Binding SelectedTransactionType}" 
+                  Style="{StaticResource ComboBoxStyle}"/>
+        <TextBox Grid.Column="2"
+                 Background="Transparent"
+                 IsEnabled="False"
+                 IsHitTestVisible="False">
+            <TextBox.Style>
+                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedTransactionType}" Value="{x:Null}">
+                            <Setter Property="Text" Value="Тип транзакции"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <TextBox Grid.Row="2"
+                 IsEnabled="False">
+            <TextBox.Style>
+                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Amount, UpdateSourceTrigger=PropertyChanged}" Value="{x:Null}">
+                            <Setter Property="Text" Value="Сумма"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <TextBox Grid.Row="2" 
+                 Background="Transparent"
+                 Text="{Binding Amount, UpdateSourceTrigger=PropertyChanged}" 
+                 Style="{StaticResource TextBoxStyle}"/>
+        <TextBox Grid.Column="2" 
+                 Grid.Row="2" 
+                 Text="{Binding Quantity}"
+                 Style="{StaticResource TextBoxStyle}"/>
+        <TextBox Grid.Row="4"
+                 IsEnabled="False">
+            <TextBox.Style>
+                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Description}" Value="{x:Null}">
+                            <Setter Property="Text" Value="Описание"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <TextBox Grid.Row="4" 
+                 Background="Transparent"
+                 Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
+                 Style="{StaticResource TextBoxStyle}"/>
+        <ComboBox IsEditable="True" 
+                  Grid.Column="2" 
+                  Grid.Row="4" 
+                  ItemsSource="{Binding Categories}"
+                  DisplayMemberPath="Name"
+                  Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}" 
+                  Style="{StaticResource ComboBoxStyle}"/>
+        <TextBox IsEnabled="False"
+                 Grid.Column="2" 
+                 Grid.Row="4" 
+                 Background="Transparent"
+                 IsHitTestVisible="False">
+            <TextBox.Style>
+                <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Category}" Value="{x:Null}">
+                            <Setter Property="Text" Value="Категория"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <Button Grid.Row="6"
+                Grid.ColumnSpan="3"
+                Content="Добавить"
+                Command="{Binding AddTransaction}"
+                CommandParameter="{Binding DataContext.UpdateMoney, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:StartView}}}"
+                FontSize="{StaticResource H3}"
+                FontWeight="DemiBold"/>
+    </Grid>
+</UserControl>

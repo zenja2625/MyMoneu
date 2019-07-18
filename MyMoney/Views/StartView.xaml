@@ -1,0 +1,108 @@
+﻿<UserControl x:Class="MyMoney.Views.StartView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:MyMoney"
+             xmlns:view="clr-namespace:MyMoney.Views"
+             xmlns:viewmodel="clr-namespace:MyMoney.ViewModels"
+             xmlns:converters="clr-namespace:MyMoney.Converters"
+             xmlns:databindingenum="clr-namespace:MyMoney.DataBindEnums"
+             xmlns:enums="clr-namespace:MyMoney.Enums"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="500">
+    <UserControl.DataContext>
+        <viewmodel:StartViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <converters:MoneyConverter x:Key="MoneyConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid UseLayoutRounding="True">
+            <Grid.Resources>
+                <Style x:Key="BorderStyle" TargetType="Border">
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="Gray"/>
+                    <Setter Property="Background" Value="#FFF0F0F0"/>
+                </Style>
+                <Style x:Key="TextBlockStyle" TargetType="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="FontSize" Value="40"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="480*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="140"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="140"/>
+            </Grid.RowDefinitions>
+
+            <Border Style="{StaticResource BorderStyle}" 
+                    Grid.Row="0">
+                <UniformGrid Rows="2">
+                    <TextBlock Style="{StaticResource TextBlockStyle}" 
+                               Text="Баланс"/>
+                    <TextBlock Style="{StaticResource TextBlockStyle}" 
+                               Text="{Binding Balance, StringFormat={}{0:C}, ConverterCulture='lv', Converter={StaticResource MoneyConverter}}" 
+                               Grid.Row="2" />
+                </UniformGrid>
+            </Border>
+            <Border Style="{StaticResource BorderStyle}" Grid.Row="3">
+                <UniformGrid Rows="2">
+                    <TextBlock Style="{StaticResource TextBlockStyle}" 
+                               Text="Расход за месяц"/>
+                    <TextBlock Style="{StaticResource TextBlockStyle}" 
+                               Text="{Binding MonthlyExpenses, StringFormat={}{0:C}, ConverterCulture='lv', Converter={StaticResource MoneyConverter}}"/>
+                </UniformGrid>
+            </Border>
+        </Grid>
+
+        <view:AddTransactionView Grid.Row="2"/>
+        <ListBox Height="150"
+                 Width="200"
+                 HorizontalAlignment="Right"
+                 VerticalAlignment="Top"
+                 ItemsSource="{Binding Accounts, Mode=TwoWay}">
+            <ListBox.Style>
+                <Style TargetType="ListBox">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=AccountFieldControl}" Value="True">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Style>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontSize="16" 
+                                   Text="{Binding Path=Name, StringFormat='{}{0}: '}"/>
+                        <TextBlock FontSize="16" 
+                                   Text="{Binding Path=Amount, StringFormat={}{0:C}, ConverterCulture=lv, Converter={StaticResource MoneyConverter}}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ToggleButton x:Name="AccountFieldControl"
+                      Height="30"
+                      Width="30"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Top"
+                      Margin="5"
+                      Content="+"
+                      FontSize="16"/>
+
+    </Grid>
+</UserControl>
